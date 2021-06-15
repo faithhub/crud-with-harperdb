@@ -3,8 +3,13 @@ const app = express();
 const morgan = require('morgan');
 const path = require('path');
 const server = require('http').createServer(app);
+const userRoute = require('./routes/user');
+const detenv = require('dotenv-safe').config({ allowEmptyValues: true });
 
 
+
+//routes
+app.use('/', userRoute);
 
 //request handling
 app.use(morgan('dev'));
