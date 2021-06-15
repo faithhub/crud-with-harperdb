@@ -23,5 +23,8 @@ router.delete('/delete-one/:id', controller.deleteOne)
 //Update
 router.put('/update/:id', validation('update'), controller.update)
 
+//Update Password
+router.put('/update-password/:id', validation('password'), controller.updatePassword)
+
 
 module.exports = router

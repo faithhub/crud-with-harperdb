@@ -175,7 +175,7 @@ exports.update = async(req, res) => {
 }
 
 //UPDATE PASSWORD
-exports.update = async(req, res) => {
+exports.updatePassword = async(req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(422).json({
@@ -185,32 +185,37 @@ exports.update = async(req, res) => {
     } else {
         try {
             bcrypt.genSalt(saltRounds, function(err, salt) {
-                bcrypt.hash(req.body.password, salt, function(err, hash) {
+                bcrypt.hash(req.body.newPassword, salt, function(err, hash) {
                     if (err) {
                         res.status(403).json({
                             message: "An error occur",
                             response: err
                         })
                     } else {
-
                         const QUERY = `SELECT * FROM ${SCHEMA}.${TABLE} WHERE id="${req.params.id}"`;
                         db.query(QUERY)
-                            .then(result => {
-                                if (result.data != null) {
-                                    bcrypt.compare(req.body.currentPassword, user.password.hash, function(err, result) {
+                            .then(user => {
+                                if (user.data != null) {
+                                    bcrypt.compare(req.body.currentPassword, user.data[0].password.hash, function(err, result) {
                                         if (result) {
-                                            User.updateOne({ _id: req.body.id }, { $set: { "password.salt": salt, "password.hash": hash } }, )
+                                            db.update({
+                                                    table: TABLE,
+                                                    records: [{
+                                                        id: req.params.id,
+                                                        password: { salt: salt, hash: hash },
+                                                    }, ],
+                                                })
                                                 .then(result => {
-                                                    res.status(201).json({
+                                                    res.status(200).json({
                                                         message: "Password Changed Successfully",
                                                         response: result
-                                                    })
+                                                    });
                                                 })
                                                 .catch(error => {
-                                                    res.status(404).json({
-                                                        message: "record not found",
+                                                    res.status(422).json({
+                                                        message: "An error occur",
                                                         response: error
-                                                    })
+                                                    });
                                                 })
                                         } else {
                                             res.status(400).json({
@@ -223,26 +228,7 @@ exports.update = async(req, res) => {
                             })
                             .catch(error => {
                                 res.status(422).json({
-                                    message: "An error occur",
-                                    response: error
-                                });
-                            })
-                        db.update({
-                                table: TABLE,
-                                records: [{
-                                    id: req.params.id,
-                                    password: req.body.password,
-                                }, ],
-                            })
-                            .then(result => {
-                                res.status(200).json({
-                                    message: "Record Updated Successfully",
-                                    response: result
-                                });
-                            })
-                            .catch(error => {
-                                res.status(422).json({
-                                    message: "An error occur",
+                                    message: "An error occur, unable to fetch user data with the id given",
                                     response: error
                                 });
                             })
