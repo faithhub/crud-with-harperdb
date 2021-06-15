@@ -81,3 +81,26 @@ exports.getOne = async(req, res) => {
 
     }
 }
+
+
+//GET ALL
+exports.getAll = async(req, res) => {
+    try {
+        const QUERY = `SELECT * FROM ${SCHEMA}.${TABLE}`
+        db.query(QUERY)
+            .then(result => {
+                res.status(200).json({
+                    message: "All Users",
+                    response: result
+                });
+            })
+            .catch(error => {
+                res.status(422).json({
+                    message: "An error occur",
+                    response: error
+                });
+            })
+    } catch (error) {
+
+    }
+}
