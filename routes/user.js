@@ -14,5 +14,14 @@ router.post('/create', validation('create'), controller.create)
 //Get One
 router.get('/get-one/:id', controller.getOne)
 
+//Get One
+router.get('/get', controller.getAll)
+
+//Delete One
+router.delete('/delete-one/:id', controller.deleteOne)
+
+//Update
+router.put('/update/:id', validation('update'), controller.update)
+
 
 module.exports = router
