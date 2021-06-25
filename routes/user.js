@@ -3,7 +3,10 @@ const router = express.Router();
 const controller = require('../controllers/user');
 const validation = require('../services/user');
 
-//for body parser
+
+/**
+ * For body parser 
+ */
 router.use(express.urlencoded({ extended: false }));
 router.use(express.json())
 
