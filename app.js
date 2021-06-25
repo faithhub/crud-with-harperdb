@@ -4,12 +4,15 @@ const morgan = require('morgan');
 const path = require('path');
 const server = require('http').createServer(app);
 const userRoute = require('./routes/user');
+const linkRoute = require('./routes/index');
 const detenv = require('dotenv-safe').config({ allowEmptyValues: true });
 
 
-
-//routes
+/**
+ * Routes
+ */
 app.use('/', userRoute);
+app.use('/', linkRoute);
 
 //request handling
 app.use(morgan('dev'));

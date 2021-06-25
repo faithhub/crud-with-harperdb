@@ -5,7 +5,7 @@ module.exports = (method) => {
         case 'create':
             {
                 return [
-                    check('link', 'Link is required').trim().escape().not().isEmpty()
+                    check('link', 'Link is required').not().isEmpty()
                 ]
             }
             break;

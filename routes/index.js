@@ -14,4 +14,11 @@ router.use(express.json())
 /**
  * Create Route
  */
-router.post('/create', validation('create'), controller.create)
+router.post('/create-link', validation('create'), controller.create)
+
+
+
+/**
+ * Export Route
+ */
+module.exports = router

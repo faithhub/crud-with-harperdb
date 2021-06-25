@@ -8,19 +8,22 @@ const saltRounds = 10;
  */
 const SCHEMA = process.env.INSTANCE_SCHEMA;
 const TABLE = 'links';
+
 /**
- * 
-  Six Unique Alphanumeric ID
+ * Six Unique Alphanumeric ID
  */
-function randomString(length, chars) {
+function randomString() {
+    var length = 8;
+    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var result = '';
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
 }
-var rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
-
-//CREATE-ONE
+/**
+ * 
+ * Create One
+ */
 exports.create = async(req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -30,17 +33,21 @@ exports.create = async(req, res, next) => {
         })
     } else {
         try {
+            var shortedLink = randomString();
             db.insert({
                     table: TABLE,
                     records: [{
-                        username: req.body.username,
-                        email: req.body.email,
+                        originalLink: req.body.link,
+                        shortedLink: shortedLink
                     }, ],
                 })
                 .then(result => {
                     res.status(200).json({
-                        message: "Registered successfully",
-                        response: result
+                        message: "Link Created successfully",
+                        response: {
+                            originalLink: req.body.link,
+                            shortedLink: shortedLink
+                        }
                     });
                 })
                 .catch(error => {
