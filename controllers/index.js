@@ -24,7 +24,7 @@ function randomString() {
  * 
  * Create One
  */
-exports.create = async(req, res, next) => {
+exports.create = async(req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(422).json({
@@ -63,5 +63,41 @@ exports.create = async(req, res, next) => {
                 response: error
             });
         }
+    }
+};
+
+/**
+ * 
+ * Get One
+ */
+exports.get = async(req, res) => {
+    try {
+        const QUERY = `SELECT * FROM ${SCHEMA}.${TABLE} WHERE shortedLink="${req.params.id}"`;
+        db.query(QUERY)
+            .then(result => {
+                console.log(result.data);
+                if (result.data != '') {
+                    res.status(200).json({
+                        message: "Fetched Successful",
+                        response: result
+                    });
+                } else {
+                    res.status(200).json({
+                        message: "No record found for the id given",
+                        response: result
+                    });
+                }
+            })
+            .catch(error => {
+                res.status(422).json({
+                    message: "An error occur",
+                    response: error
+                });
+            })
+    } catch (error) {
+        res.status(422).json({
+            message: "An error occur",
+            response: error
+        });
     }
 };
